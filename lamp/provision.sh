@@ -84,4 +84,8 @@ function all() {
   install_phpmyadmin
   info "DONE!!!"
 }
+
+if [[ $1 == '' ]]; then
+  all
+fi
 $*
