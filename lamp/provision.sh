@@ -68,6 +68,13 @@ function install_phpmyadmin() {
   cp -pr /vagrant/ops/phpmyadmin/phpmyadmin.conf /etc/httpd/conf.d/phpmyadmin.conf
 }
 
+function install_composer() {
+  info "Install Composer"
+  curl -SLO https://getcomposer.org/composer.phar
+  chmod +x composer.phar
+  mv composer.phar /usr/local/bin/composer
+}
+
 function install_node() {
   info "Install NodeJS"
   curl -SLO https://nodejs.org/dist/v7.9.0/node-v7.9.0-linux-x64.tar.xz
@@ -95,6 +102,7 @@ function all() {
   install_mariadb
   install_php
   install_phpmyadmin
+  install_composer
   install_node
   install_bower
   install_gulp
