@@ -1,4 +1,6 @@
 #!/bin/sh
+MYSQL_ROOT_PASSWORD="123456"
+
 say() { echo >&1 -e ":: $*"; }
 info() { echo >&1 -e ":: \033[01;32m$*\033[00m"; }
 warn() { echo >&2 -e ":: \033[00;31m$*\033[00m"; }
@@ -38,8 +40,9 @@ function install_mariadb() {
   info $command && eval $command
   systemctl enable mariadb
   systemctl start mariadb
-  # mysql_secure_installation
-  # /vagrant/db.sh init
+  mysql -e "CREATE USER 'root'@'%' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';"
+  mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'root'@'%';"
+  mysql -e "FLUSH PRIVILEGES;"
 }
 
 function install_php() {
@@ -63,6 +66,14 @@ function install_phpmyadmin() {
 
   echo "Alias /phpmyadmin /var/www/tools/phpmyadmin" >> /etc/httpd/conf.d/alias.conf
   cp -pr /vagrant/ops/phpmyadmin/phpmyadmin.conf /etc/httpd/conf.d/phpmyadmin.conf
+}
+
+function install_node() {
+  info "Install NodeJS"
+  curl -SLO https://nodejs.org/dist/v7.9.0/node-v7.9.0-linux-x64.tar.xz
+  tar -xf node-v7.9.0-linux-x64.tar.xz
+  mv node-v7.9.0-linux-x64 /usr/local/share/node
+  echo 'export PATH=$PATH:/usr/local/share/node/bin' >> /etc/profile
 }
 
 function all() {
