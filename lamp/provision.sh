@@ -74,6 +74,19 @@ function install_node() {
   tar -xf node-v7.9.0-linux-x64.tar.xz
   mv node-v7.9.0-linux-x64 /usr/local/share/node
   echo 'export PATH=$PATH:/usr/local/share/node/bin' >> /etc/profile
+  export PATH=$PATH:/usr/local/share/node/bin
+}
+
+function install_bower() {
+  info "Install Bower"
+  command="npm install -g bower"
+  info $command && eval $command
+}
+
+function install_gulp() {
+  info "Install Gulp"
+  command="npm install -g gulp"
+  info $command && eval $command
 }
 
 function all() {
@@ -82,6 +95,9 @@ function all() {
   install_mariadb
   install_php
   install_phpmyadmin
+  install_node
+  install_bower
+  install_gulp
   info "DONE!!!"
 }
 
