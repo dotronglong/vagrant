@@ -8,6 +8,10 @@ die() { echo >&2 -e ":: \033[00;31m$*\033[00m"; exit 1; }
 null() { echo >/dev/null; }
 
 function setup() {
+  # Setup Google DNS
+  echo "nameserver 8.8.8.8" > /etc/resolv.conf
+  echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+
   # Disable SELinux
   info "Set Up SELinux"
   cp -pr /vagrant/ops/etc/sysconfig/selinux /etc/sysconfig/selinux
@@ -24,12 +28,18 @@ function setup() {
   cp -pr /vagrant/ops/yum.repos.d/* /etc/yum.repos.d/
 }
 
+function install_nfsd() {
+  info "Install NFS"
+  systemctl enable rpcbind
+  systemctl enable nfs-server
+}
+
 function install_httpd() {
   info "Install Apache"
   command="yum install -y httpd httpd-devel httpd-tools"
   info $command && eval $command
 
-  cp -pr /vagrant/ops/httpd/conf/httd.conf
+  cp -pr /vagrant/ops/httpd/conf/httd.conf /etc/httpd/conf/httpd.conf
   cp -pr /vagrant/ops/httpd/conf.d/* /etc/httpd/conf.d/
   systemctl enable httpd
   systemctl enable httpd
@@ -102,6 +112,7 @@ function install_gulp() {
 
 function all() {
   setup
+  install_nfsd
   install_httpd
   install_mariadb
   install_php
