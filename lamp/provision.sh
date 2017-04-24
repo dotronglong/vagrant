@@ -13,8 +13,12 @@ function setup() {
   cp -pr /vagrant/ops/etc/sysconfig/selinux /etc/sysconfig/selinux
 
   # Install necessary tools
-  command="yum install -y wget vim git unzip"
+  command="yum install -y wget curl vim git unzip"
   info $command && eval $command
+
+  # Install Vagrant Public Key
+  curl https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub \
+    >> /home/vagrant/.ssh/authorized_keys
 
   # Repos
   cp -pr /vagrant/ops/yum.repos.d/* /etc/yum.repos.d/
