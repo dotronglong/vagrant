@@ -39,8 +39,15 @@ function install_nginx() {
   command="yum install -y nginx"
   info $command && eval $command
   cp -pr /vagrant/ops/nginx/nginx.conf /etc/nginx/nginx.conf
+  cp -pr /vagrant/ops/nginx/conf.d/* /etc/nginx/conf.d/
   systemctl enable nginx
   systemctl start nginx
+}
+
+function install_nginx_phpmyadmin() {
+  mkdir /var/www/tools
+  install_phpmyadmin
+  ln -s /var/www/tools/phpmyadmin /var/www/html/phpmyadmin
 }
 
 function install_httpd() {
@@ -51,7 +58,7 @@ function install_httpd() {
   cp -pr /vagrant/ops/httpd/conf/httd.conf /etc/httpd/conf/httpd.conf
   cp -pr /vagrant/ops/httpd/conf.d/* /etc/httpd/conf.d/
   systemctl enable httpd
-  systemctl enable httpd
+  systemctl start httpd
   mkdir /var/www/tools
 }
 
@@ -76,7 +83,13 @@ function install_php() {
   info $command && eval $command
   cp -pr /vagrant/ops/php/conf.d/10-php.conf /etc/httpd/conf.modules.d/10-php.conf
   cp -pr /vagrant/ops/php/php.d/* /etc/php.d/
+}
+
+function install_fpm() {
+  install_php
   cp -pr /vagrant/ops/php-fpm.d/* /etc/php-fpm.d/
+  systemctl enable php-fpm
+  systemctl start php-fpm
 }
 
 function install_phpmyadmin() {

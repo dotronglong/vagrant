@@ -33,8 +33,8 @@ Vagrant.configure("2") do |config|
       provision install_nfsd
       provision install_nginx
       provision install_mariadb
-      provision install_php
-      provision install_phpmyadmin
+      provision install_fpm
+      provision install_nginx_phpmyadmin
       provision install_composer
       provision install_node
       provision install_bower
