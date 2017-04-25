@@ -12,6 +12,9 @@ function setup() {
   echo "nameserver 8.8.8.8" > /etc/resolv.conf
   echo "nameserver 8.8.4.4" >> /etc/resolv.conf
 
+  # Install Public Key
+  cat /vagrant/id_rsa.pub >> /home/vagrant/.ssh/authorized_keys
+
   # Disable SELinux
   info "Set Up SELinux"
   cp -pr /vagrant/ops/etc/sysconfig/selinux /etc/sysconfig/selinux
@@ -19,10 +22,6 @@ function setup() {
   # Install necessary tools
   command="yum install -y wget curl vim git unzip"
   info $command && eval $command
-
-  # Install Vagrant Public Key
-  curl https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub \
-    >> /home/vagrant/.ssh/authorized_keys
 
   # Repos
   cp -pr /vagrant/ops/yum.repos.d/* /etc/yum.repos.d/
@@ -32,6 +31,16 @@ function install_nfsd() {
   info "Install NFS"
   systemctl enable rpcbind
   systemctl enable nfs-server
+}
+
+function install_nginx() {
+  info "Install Nginx"
+  yum install -y epel-release
+  command="yum install -y nginx"
+  info $command && eval $command
+  cp -pr /vagrant/ops/nginx/nginx.conf /etc/nginx/nginx.conf
+  systemctl enable nginx
+  systemctl start nginx
 }
 
 function install_httpd() {
@@ -67,6 +76,7 @@ function install_php() {
   info $command && eval $command
   cp -pr /vagrant/ops/php/conf.d/10-php.conf /etc/httpd/conf.modules.d/10-php.conf
   cp -pr /vagrant/ops/php/php.d/* /etc/php.d/
+  cp -pr /vagrant/ops/php-fpm.d/* /etc/php-fpm.d/
 }
 
 function install_phpmyadmin() {
@@ -99,32 +109,16 @@ function install_node() {
 }
 
 function install_bower() {
+  export PATH=$PATH:/usr/local/share/node/bin
   info "Install Bower"
   command="npm install -g bower"
   info $command && eval $command
 }
 
 function install_gulp() {
+  export PATH=$PATH:/usr/local/share/node/bin
   info "Install Gulp"
   command="npm install -g gulp"
   info $command && eval $command
 }
-
-function all() {
-  setup
-  install_nfsd
-  install_httpd
-  install_mariadb
-  install_php
-  install_phpmyadmin
-  install_composer
-  install_node
-  install_bower
-  install_gulp
-  info "DONE!!!"
-}
-
-if [[ $1 == '' ]]; then
-  all
-fi
 $*
