@@ -116,6 +116,7 @@ function install_node() {
   info "Install NodeJS"
   curl -SLO https://nodejs.org/dist/v7.9.0/node-v7.9.0-linux-x64.tar.xz
   tar -xf node-v7.9.0-linux-x64.tar.xz
+  rm -rf node-v7.9.0-linux-x64.tar.xz
   mv node-v7.9.0-linux-x64 /usr/local/share/node
   echo 'export PATH=$PATH:/usr/local/share/node/bin' >> /etc/profile
   export PATH=$PATH:/usr/local/share/node/bin
