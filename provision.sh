@@ -28,13 +28,13 @@ function setup() {
 }
 
 function install_nfsd() {
-  info "Install NFS"
+  info "Installing NFS"
   systemctl enable rpcbind
   systemctl enable nfs-server
 }
 
 function install_nginx() {
-  info "Install Nginx"
+  info "Installing Nginx"
   yum install -y epel-release
   command="yum install -y nginx"
   info $command && eval $command
@@ -51,7 +51,7 @@ function install_nginx_phpmyadmin() {
 }
 
 function install_httpd() {
-  info "Install Apache"
+  info "Installing Apache"
   command="yum install -y httpd httpd-devel httpd-tools"
   info $command && eval $command
 
@@ -63,7 +63,7 @@ function install_httpd() {
 }
 
 function install_mariadb() {
-  info "Install MariaDB"
+  info "Installing MariaDB"
   yum remove -y mariadb-*
   rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
   command="yum install -y MariaDB-server MariaDB-client"
@@ -76,7 +76,7 @@ function install_mariadb() {
 }
 
 function install_php() {
-  info "Install PHP"
+  info "Installing PHP"
   rpm -Uvh /vagrant/ops/rpm/epel-release-latest-7.noarch.rpm
   rpm -Uvh /vagrant/ops/rpm/webtatic-release.rpm
   command="yum install -y --skip-broken php71w-* mod_php71w"
@@ -93,7 +93,7 @@ function install_fpm() {
 }
 
 function install_phpmyadmin() {
-  info "Install phpMyAdmin"
+  info "Installing phpMyAdmin"
   curl -SLO https://files.phpmyadmin.net/phpMyAdmin/4.7.0/phpMyAdmin-4.7.0-english.zip
   unzip phpMyAdmin-4.7.0-english.zip
   rm -rf phpMyAdmin-4.7.0-english.zip
@@ -106,14 +106,14 @@ function install_phpmyadmin() {
 }
 
 function install_composer() {
-  info "Install Composer"
+  info "Installing Composer"
   curl -SLO https://getcomposer.org/composer.phar
   chmod +x composer.phar
   mv composer.phar /usr/local/bin/composer
 }
 
 function install_node() {
-  info "Install NodeJS"
+  info "Installing NodeJS"
   curl -SLO https://nodejs.org/dist/v7.9.0/node-v7.9.0-linux-x64.tar.xz
   tar -xf node-v7.9.0-linux-x64.tar.xz
   rm -rf node-v7.9.0-linux-x64.tar.xz
@@ -124,41 +124,58 @@ function install_node() {
 
 function install_bower() {
   export PATH=$PATH:/usr/local/share/node/bin
-  info "Install Bower"
+  info "Installing Bower"
   command="npm install -g bower"
   info $command && eval $command
 }
 
 function install_gulp() {
   export PATH=$PATH:/usr/local/share/node/bin
-  info "Install Gulp"
+  info "Installing Gulp"
   command="npm install -g gulp"
   info $command && eval $command
 }
 
 function install_docker_ce() {
+  info "Installing Docker CE"
   yum install -y yum-utils \
     device-mapper-persistent-data \
     lvm2
-
   yum-config-manager \
     --add-repo \
     https://download.docker.com/linux/centos/docker-ce.repo
+  yum install -y docker-ce
 
-  yum install docker-ce
+  groupadd docker
+  usermod -aG docker vagrant
+
   systemctl enable docker
   systemctl start docker
 }
 
 function install_docker_compose() {
-  curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` \
-       -o /usr/local/bin/docker-compose
+  info "Installing Docker Compose"
+  DOCKER_COMPOSE="docker-compose-`uname -s`-`uname -m`"
+  DOCKER_COMPOSE_VERSION="1.16.1"
+  curl -SLO https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/$DOCKER_COMPOSE
 
-  chmod +x /usr/local/bin/docker-compose
-  docker-compose --version
+  chmod +x $DOCKER_COMPOSE
+  mv $DOCKER_COMPOSE /usr/local/bin/docker-compose
 }
 
 function install_buddy_ci() {
-  curl -sSL https://get.buddy.works | sh && sudo buddy install
+  info "Installing Buddy CI"
+  curl -sSL https://get.buddy.works | sh && buddy install
+}
+
+function install_ngrok() {
+  info "Installing ngrok"
+  NGROK_FILE="ngrok-stable-linux-amd64.zip"
+  NGROK_LINK="https://bin.equinox.io/c/4VmDzA7iaHb/$NGROK_FILE"
+  curl -SLO $NGROK_LINK
+
+  unzip $NGROK_FILE && rm -rf $NGROK_FILE
+  chmod +x ngrok
+  mv ngrok /usr/local/bin/ngrok
 }
 $*
