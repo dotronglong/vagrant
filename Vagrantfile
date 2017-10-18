@@ -50,7 +50,7 @@ Vagrant.configure("2") do |config|
       provision setup
       provision install_docker_ce
       provision install_docker_compose
-      provision install_buddy_ci
+      # provision install_buddy_ci
       provision info "DONE!!!"
     SHELL
   end

@@ -146,7 +146,7 @@ function install_docker_ce() {
     https://download.docker.com/linux/centos/docker-ce.repo
   yum install -y docker-ce
 
-  groupadd docker
+  # groupadd docker
   usermod -aG docker vagrant
 
   systemctl enable docker
@@ -165,7 +165,8 @@ function install_docker_compose() {
 
 function install_buddy_ci() {
   info "Installing Buddy CI"
-  curl -sSL https://get.buddy.works | sh && buddy install
+  rm -rf ~/.buddy
+  curl -sSL https://get.buddy.works | sh && sudo buddy install
 }
 
 function install_ngrok() {
