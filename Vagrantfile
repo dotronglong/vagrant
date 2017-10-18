@@ -53,5 +53,21 @@ Vagrant.configure("2") do |config|
       # provision install_buddy_ci
       provision info "DONE!!!"
     SHELL
+    config.vm.provider "virtualbox" do |vb|
+      vb.memory = "4096"
+      vb.cpus = 2
+    end
+  end
+
+  config.vm.define "gocd" do |lemp|
+    lemp.vm.hostname = 'gocd'
+    lemp.vm.network :private_network, ip: "192.168.33.90"
+    lemp.vm.provision "shell", inline: <<-SHELL
+      provision setup
+      provision install_jre
+      provision install_gocd
+      provision install_gocd_client
+      provision info "DONE!!!"
+    SHELL
   end
 end

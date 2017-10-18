@@ -154,13 +154,13 @@ function install_docker_ce() {
 }
 
 function install_docker_compose() {
-  info "Installing Docker Compose"
-  DOCKER_COMPOSE="docker-compose-`uname -s`-`uname -m`"
-  DOCKER_COMPOSE_VERSION="1.16.1"
-  curl -SLO https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/$DOCKER_COMPOSE
+  DC="docker-compose-`uname -s`-`uname -m`"
+  DC_VER="1.16.1"
+  info "Installing Docker Compose $DC_VER"
+  curl -SLO https://github.com/docker/compose/releases/download/$DC_VER/$DC
 
-  chmod +x $DOCKER_COMPOSE
-  mv $DOCKER_COMPOSE /usr/local/bin/docker-compose
+  chmod +x $DC
+  mv $DC /usr/local/bin/docker-compose
 }
 
 function install_buddy_ci() {
@@ -178,5 +178,31 @@ function install_ngrok() {
   unzip $NGROK_FILE && rm -rf $NGROK_FILE
   chmod +x ngrok
   mv ngrok /usr/local/bin/ngrok
+}
+
+function install_jre() {
+  JRE_VER=9.0.1_linux-x64_bin
+  JRE_URL=https://github.com/dotronglong/jre/raw/master/jre-$JRE_VER.rpm
+  info "Installing JRE $JRE_VER"
+  rpm -ivh $JRE_URL
+}
+
+function install_gocd() {
+  GOCD_VER=17.10.0-5380
+  GOCD_URL=https://download.gocd.org/binaries/$GOCD_VER/rpm/go-server-$GOCD_VER.noarch.rpm
+  info "Installing GoCD $GOCD_VER"
+  rpm -ivh $GOCD_URL
+  cp -pr /vagrant/ops/gocd/go-server /etc/default/go-server
+  /etc/init.d/go-server start
+}
+
+function install_gocd_client() {
+  GOCD_VER=17.10.0-5380
+  GOCD_URL=https://download.gocd.org/binaries/$GOCD_VER/rpm/go-agent-$GOCD_VER.noarch.rpm
+  info "Installing GoCD Client $GOCD_VER"
+  mkdir -p /var/go
+  rpm -ivh $GOCD_URL
+  cp -pr /vagrant/ops/gocd/go-agent /etc/default/go-agent
+  /etc/init.d/go-agent start
 }
 $*
