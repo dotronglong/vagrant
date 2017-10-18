@@ -166,7 +166,7 @@ function install_docker_compose() {
 function install_buddy_ci() {
   info "Installing Buddy CI"
   rm -rf ~/.buddy
-  curl -sSL https://get.buddy.works | sh && sudo buddy install
+  curl -sSL https://get.buddy.works | sh && buddy install
 }
 
 function install_ngrok() {
