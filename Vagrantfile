@@ -42,4 +42,16 @@ Vagrant.configure("2") do |config|
       provision info "DONE!!!"
     SHELL
   end
+
+  config.vm.define "buddy-ci" do |lemp|
+    lemp.vm.hostname = 'buddy-ci'
+    lemp.vm.network :private_network, ip: "192.168.33.88"
+    lemp.vm.provision "shell", inline: <<-SHELL
+      provision setup
+      provision install_docker_ce
+      provision install_docker_compose
+      provision install_buddy_ci
+      provision info "DONE!!!"
+    SHELL
+  end
 end

@@ -135,4 +135,30 @@ function install_gulp() {
   command="npm install -g gulp"
   info $command && eval $command
 }
+
+function install_docker_ce() {
+  yum install -y yum-utils \
+    device-mapper-persistent-data \
+    lvm2
+
+  yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+
+  yum install docker-ce
+  systemctl enable docker
+  systemctl start docker
+}
+
+function install_docker_compose() {
+  curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` \
+       -o /usr/local/bin/docker-compose
+
+  chmod +x /usr/local/bin/docker-compose
+  docker-compose --version
+}
+
+function install_buddy_ci() {
+  curl -sSL https://get.buddy.works | sh && sudo buddy install
+}
 $*
