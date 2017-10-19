@@ -27,6 +27,19 @@ function setup() {
   cp -pr /vagrant/ops/yum.repos.d/* /etc/yum.repos.d/
 }
 
+function install_system_tools() {
+  install_netstat
+  install_nmap
+}
+
+function install_netstat() {
+  yum install -y net-tools
+}
+
+function install_nmap() {
+  yum install -y nmap
+}
+
 function install_nfsd() {
   info "Installing NFS"
   systemctl enable rpcbind
@@ -187,14 +200,18 @@ function install_jre() {
   rpm -ivh $JRE_URL
 }
 
-function install_gocd() {
+function install_gocd_repo() {
+  info "Installing GoCD repository"
+  cp -pr /vagrant/ops/gocd/gocd.repo /etc/yum.repos.d/gocd.repo
+}
+
+function install_gocd_server() {
   GOCD_VER=17.10.0-5380
   GOCD_URL=https://download.gocd.org/binaries/$GOCD_VER/rpm/go-server-$GOCD_VER.noarch.rpm
   info "Installing GoCD $GOCD_VER"
   mkdir -p /var/go
   rpm -ivh $GOCD_URL
-  cp -pr /vagrant/ops/gocd/go-server /etc/default/go-server
-  /etc/init.d/go-server start
+  systemctl enable go-server
 }
 
 function install_gocd_client() {
@@ -203,7 +220,11 @@ function install_gocd_client() {
   info "Installing GoCD Client $GOCD_VER"
   mkdir -p /var/go
   rpm -ivh $GOCD_URL
-  cp -pr /vagrant/ops/gocd/go-agent /etc/default/go-agent
-  /etc/init.d/go-agent start
+  systemctl enable go-agent
+}
+
+function install_gocd_nginx() {
+  install_nginx
+  \cp -pr /vagrant/ops/gocd/gocd.conf /etc/nginx/conf.d/default.conf
 }
 $*

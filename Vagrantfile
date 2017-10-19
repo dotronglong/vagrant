@@ -65,9 +65,11 @@ Vagrant.configure("2") do |config|
     lemp.vm.provision "shell", inline: <<-SHELL
       provision setup
       provision install_jre
-      provision install_gocd
+      provision install_gocd_server
       provision install_gocd_client
+      provision install_gocd_nginx
       provision info "DONE!!!"
+      provision warn "PLEASE RELOAD MACHINE BEFORE USING!"
     SHELL
   end
 end
