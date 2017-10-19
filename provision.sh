@@ -181,7 +181,7 @@ function install_ngrok() {
 }
 
 function install_jre() {
-  JRE_VER=9.0.1_linux-x64_bin
+  JRE_VER=8u151-linux-x64
   JRE_URL=https://github.com/dotronglong/jre/raw/master/jre-$JRE_VER.rpm
   info "Installing JRE $JRE_VER"
   rpm -ivh $JRE_URL
@@ -191,6 +191,7 @@ function install_gocd() {
   GOCD_VER=17.10.0-5380
   GOCD_URL=https://download.gocd.org/binaries/$GOCD_VER/rpm/go-server-$GOCD_VER.noarch.rpm
   info "Installing GoCD $GOCD_VER"
+  mkdir -p /var/go
   rpm -ivh $GOCD_URL
   cp -pr /vagrant/ops/gocd/go-server /etc/default/go-server
   /etc/init.d/go-server start
