@@ -227,4 +227,18 @@ function install_gocd_nginx() {
   install_nginx
   \cp -pr /vagrant/ops/gocd/gocd.conf /etc/nginx/conf.d/default.conf
 }
+
+function install_jenkins() {
+  info "Installing Jenkins"
+  wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+  rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+  yum install -y jenkins
+  systemctl enable jenkins
+  systemctl start jenkins
+}
+
+function install_jenkins_nginx() {
+  install_nginx
+  \cp -pr /vagrant/ops/jenkins/default.conf /etc/nginx/conf.d/default.conf
+}
 $*
