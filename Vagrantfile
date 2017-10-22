@@ -80,6 +80,20 @@ Vagrant.configure("2") do |config|
       provision install_jre
       provision install_jenkins
       provision install_jenkins_nginx
+      provision info "DONE!!!"
+    SHELL
+  end
+
+  config.vm.define "jenkins-docker" do |box|
+    box.vm.hostname = 'jenkins-docker'
+    box.vm.network :private_network, ip: "192.168.33.99"
+    box.vm.provision "shell", inline: <<-SHELL
+      provision setup
+      provision install_jre
+      provision install_jenkins
+      provision install_jenkins_nginx
+      provision install_docker_ce
+      provision install_docker_compose
       usermod -aG docker jenkins
       provision info "DONE!!!"
     SHELL
