@@ -80,6 +80,7 @@ Vagrant.configure("2") do |config|
       provision install_jre
       provision install_jenkins
       provision install_jenkins_nginx
+      usermod -aG docker jenkins
       provision info "DONE!!!"
     SHELL
   end
