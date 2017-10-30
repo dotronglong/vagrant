@@ -49,7 +49,7 @@ function install_nfsd() {
 function install_nginx() {
   info "Installing Nginx"
   yum install -y epel-release
-  command="yum install -y nginx"
+  command="yum install -y nginx httpd-tools"
   info $command && eval $command
   cp -pr /vagrant/ops/nginx/nginx.conf /etc/nginx/nginx.conf
   cp -pr /vagrant/ops/nginx/conf.d/* /etc/nginx/conf.d/

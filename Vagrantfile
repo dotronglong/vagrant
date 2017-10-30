@@ -111,4 +111,15 @@ Vagrant.configure("2") do |config|
       provision info "DONE!!!"
     SHELL
   end
+
+  config.vm.define "centos-docker" do |box|
+    box.vm.hostname = 'centos-docker'
+    box.vm.network :private_network, ip: "192.168.33.35"
+    box.vm.provision "shell", inline: <<-SHELL
+      provision setup
+      provision install_docker_ce
+      provision install_docker_compose
+      provision info "DONE!!!"
+    SHELL
+  end
 end
