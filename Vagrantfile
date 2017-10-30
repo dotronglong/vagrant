@@ -98,4 +98,17 @@ Vagrant.configure("2") do |config|
       provision info "DONE!!!"
     SHELL
   end
+
+  config.vm.define "jenkins-php" do |box|
+    box.vm.hostname = 'jenkins-php'
+    box.vm.network :private_network, ip: "192.168.33.99"
+    box.vm.provision "shell", inline: <<-SHELL
+      provision setup
+      provision install_jre
+      provision install_jenkins
+      provision install_jenkins_nginx
+      provision install_php
+      provision info "DONE!!!"
+    SHELL
+  end
 end
