@@ -122,4 +122,14 @@ Vagrant.configure("2") do |config|
       provision info "DONE!!!"
     SHELL
   end
+
+  config.vm.define "coreos-etcd" do |box|
+    box.vm.hostname = 'coreos-etcd'
+    box.vm.network :private_network, ip: "192.168.33.58"
+    box.vm.provision "shell", inline: <<-SHELL
+      provision setup
+      provision install_etcd
+      provision info "DONE!!!"
+    SHELL
+  end
 end
