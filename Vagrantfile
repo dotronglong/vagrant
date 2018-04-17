@@ -132,4 +132,18 @@ Vagrant.configure("2") do |config|
       provision info "DONE!!!"
     SHELL
   end
+
+  config.vm.define "lemp-docker" do |box|
+    box.vm.hostname = 'lemp-docker'
+    box.vm.network :private_network, ip: "192.168.33.25"
+    box.vm.provision "shell", inline: <<-SHELL
+      provision setup
+      provision install_nfsd
+      provision install_fpm
+      provision install_composer
+      provision install_docker_ce
+      provision install_docker_compose
+      provision info "DONE!!!"
+    SHELL
+  end
 end

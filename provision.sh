@@ -9,8 +9,12 @@ null() { echo >/dev/null; }
 
 function setup() {
   # Setup Google DNS
-  echo "nameserver 8.8.8.8" > /etc/resolv.conf
-  echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+  # echo "nameserver 8.8.8.8" > /etc/resolv.conf
+  # echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+
+  # Setup Cloudflare DNS
+  echo "nameserver 1.1.1.1" > /etc/resolv.conf
+  echo "nameserver 1.0.0.1" >> /etc/resolv.conf
 
   # Install Public Key
   cat /vagrant/id_rsa.pub >> /home/vagrant/.ssh/authorized_keys
