@@ -139,10 +139,26 @@ Vagrant.configure("2") do |config|
     box.vm.provision "shell", inline: <<-SHELL
       provision setup
       provision install_nfsd
+      provision install_nginx
+      provision install_mariadb
       provision install_fpm
+      provision install_nginx_phpmyadmin
       provision install_composer
       provision install_docker_ce
       provision install_docker_compose
+      provision info "DONE!!!"
+    SHELL
+  end
+
+  config.vm.define "lempy" do |box|
+    box.vm.hostname = 'lempy'
+    box.vm.network :private_network, ip: "192.168.33.27"
+    box.vm.provision "shell", inline: <<-SHELL
+      provision setup
+      provision install_nfsd
+      provision install_nginx
+      # provision install_mariadb
+      # provision install_python
       provision info "DONE!!!"
     SHELL
   end

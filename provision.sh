@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 MYSQL_ROOT_PASSWORD="123456"
 
 say() { echo >&1 -e ":: $*"; }
@@ -277,5 +277,32 @@ COMMENT
 COMMENT
 
   echo "export PATH=$PATH:$ETCD_DIR" > /etc/profile.d/etcd.sh
+}
+
+function install_development_tools() {
+  info "Install Development Tools"
+  yum groupinstall "Development Tools" -y
+}
+
+function install_python() {
+  # install_development_tools
+
+  PY_VERSION=${1:-2.7.14}
+  info "Installing Python $PY_VERSION"
+  curl -SLO https://www.python.org/ftp/python/$PY_VERSION/Python-$PY_VERSION.tgz
+  tar -xzf Python-$PY_VERSION.tgz && rm -rf Python-$PY_VERSION.tgz
+  cd Python-$PY_VERSION
+  ./configure --enable-optimizations
+  make && make install
+  cd ../ && rm -rf Python-$PY_VERSION
+
+  curl -SLO https://bootstrap.pypa.io/get-pip.py
+  python get-pip.py
+}
+
+function install_python_flask() {
+  FLASK_VERSION=${1:-0.12.2}
+  info "Installing Python Flask $FLASK_VERSION"
+  pip install Flask==$FLASK_VERSION
 }
 $*
