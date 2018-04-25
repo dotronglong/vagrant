@@ -24,7 +24,7 @@ function setup() {
   cp -pr /vagrant/ops/etc/sysconfig/selinux /etc/sysconfig/selinux
 
   # Install necessary tools
-  command="yum install -y wget curl vim git unzip"
+  command="yum install -y wget curl vim git unzip openssl-devel"
   info $command && eval $command
 
   # Repos
@@ -83,7 +83,7 @@ function install_mariadb() {
   info "Installing MariaDB"
   yum remove -y mariadb-*
   rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
-  command="yum install -y MariaDB-server MariaDB-client"
+  command="yum install -y MariaDB-server MariaDB-client MariaDB-devel"
   info $command && eval $command
   systemctl enable mariadb
   systemctl start mariadb
@@ -281,23 +281,34 @@ COMMENT
 
 function install_development_tools() {
   info "Install Development Tools"
-  yum groupinstall "Development Tools" -y
+  # yum groupinstall "Development Tools" -y
+  yum --setopt=group_package_types=mandatory,default groupinstall "Development Tools" -y
 }
 
 function install_python() {
-  # install_development_tools
-
   PY_VERSION=${1:-2.7.14}
+  PY_DIR=/usr/local/share/python-$PY_VERSION
   info "Installing Python $PY_VERSION"
   curl -SLO https://www.python.org/ftp/python/$PY_VERSION/Python-$PY_VERSION.tgz
   tar -xzf Python-$PY_VERSION.tgz && rm -rf Python-$PY_VERSION.tgz
   cd Python-$PY_VERSION
-  ./configure --enable-optimizations
+  ./configure --enable-optimizations \
+		          --enable-unicode=ucs4
+
   make && make install
   cd ../ && rm -rf Python-$PY_VERSION
+}
 
+function install_python_devel() {
+  command="yum install -y python2-devel"
+  info $command && eval $command
+}
+
+function install_pip() {
+  info "Installing pip"
   curl -SLO https://bootstrap.pypa.io/get-pip.py
-  python get-pip.py
+  python get-pip.py && rm -rf get-pip.py
+  pip -V
 }
 
 function install_python_flask() {

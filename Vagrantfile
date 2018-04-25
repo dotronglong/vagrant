@@ -157,8 +157,11 @@ Vagrant.configure("2") do |config|
       provision setup
       provision install_nfsd
       provision install_nginx
-      # provision install_mariadb
+      provision install_mariadb
+      # provision install_development_tools
       # provision install_python
+      provision install_python_devel
+      provision install_pip
       provision info "DONE!!!"
     SHELL
   end
