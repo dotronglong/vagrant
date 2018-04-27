@@ -110,11 +110,12 @@ function install_fpm() {
 }
 
 function install_phpmyadmin() {
+  PMA_VERSION=4.7.0
   info "Installing phpMyAdmin"
-  curl -SLO https://files.phpmyadmin.net/phpMyAdmin/4.7.0/phpMyAdmin-4.7.0-english.zip
-  unzip phpMyAdmin-4.7.0-english.zip
-  rm -rf phpMyAdmin-4.7.0-english.zip
-  mv phpMyAdmin-4.7.0-english phpmyadmin
+  curl -SLO https://files.phpmyadmin.net/phpMyAdmin/$PMA_VERSION/phpMyAdmin-$PMA_VERSION-english.zip
+  unzip -q phpMyAdmin-$PMA_VERSION-english.zip
+  rm -rf phpMyAdmin-$PMA_VERSION-english.zip
+  mv phpMyAdmin-$PMA_VERSION-english phpmyadmin
   cp -pr /vagrant/ops/phpmyadmin/config.inc.php phpmyadmin/config.inc.php
   mv phpmyadmin /var/www/tools/phpmyadmin
 
@@ -127,6 +128,12 @@ function install_composer() {
   curl -SLO https://getcomposer.org/composer.phar
   chmod +x composer.phar
   mv composer.phar /usr/local/bin/composer
+}
+
+function install_nvm() {
+  NVM_VERSION=0.33.11
+  info "Installing nvm $NVM_VERSION"
+  curl -o- https://raw.githubusercontent.com/creationix/nvm/v$NVM_VERSION/install.sh | bash
 }
 
 function install_node() {
@@ -192,7 +199,7 @@ function install_ngrok() {
   NGROK_LINK="https://bin.equinox.io/c/4VmDzA7iaHb/$NGROK_FILE"
   curl -SLO $NGROK_LINK
 
-  unzip $NGROK_FILE && rm -rf $NGROK_FILE
+  unzip -q $NGROK_FILE && rm -rf $NGROK_FILE
   chmod +x ngrok
   mv ngrok /usr/local/bin/ngrok
 }
@@ -229,7 +236,7 @@ function install_gocd_client() {
 
 function install_gocd_nginx() {
   install_nginx
-  \cp -pr /vagrant/ops/gocd/gocd.conf /etc/nginx/conf.d/default.conf
+  cp -pr /vagrant/ops/gocd/gocd.conf /etc/nginx/conf.d/default.conf
 }
 
 function install_jenkins() {
@@ -243,7 +250,7 @@ function install_jenkins() {
 
 function install_jenkins_nginx() {
   install_nginx
-  \cp -pr /vagrant/ops/jenkins/default.conf /etc/nginx/conf.d/default.conf
+  cp -pr /vagrant/ops/jenkins/default.conf /etc/nginx/conf.d/default.conf
 }
 
 function install_etcd() {
@@ -309,11 +316,5 @@ function install_pip() {
   curl -SLO https://bootstrap.pypa.io/get-pip.py
   python get-pip.py && rm -rf get-pip.py
   pip -V
-}
-
-function install_python_flask() {
-  FLASK_VERSION=${1:-0.12.2}
-  info "Installing Python Flask $FLASK_VERSION"
-  pip install Flask==$FLASK_VERSION
 }
 $*

@@ -36,10 +36,9 @@ Vagrant.configure("2") do |config|
       provision install_fpm
       provision install_nginx_phpmyadmin
       provision install_composer
-      provision install_node
-      provision install_bower
-      provision install_gulp
-      provision info "DONE!!!"
+    SHELL
+    box.vm.provision "shell", privileged: false, inline: <<-SHELL
+      provision install_nvm
     SHELL
   end
 
