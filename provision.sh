@@ -288,22 +288,36 @@ COMMENT
 
 function install_development_tools() {
   info "Install Development Tools"
+
+  # To install all packages (mandatory, recommend)
   # yum groupinstall "Development Tools" -y
+
+  # To install minimum packages
   yum --setopt=group_package_types=mandatory,default groupinstall "Development Tools" -y
 }
 
 function install_python() {
-  PY_VERSION=${1:-2.7.14}
-  PY_DIR=/usr/local/share/python-$PY_VERSION
+  PY_VERSION=${1:-3.6.5}
+  PY_DIR=/usr/share/python/$PY_VERSION
   info "Installing Python $PY_VERSION"
   curl -SLO https://www.python.org/ftp/python/$PY_VERSION/Python-$PY_VERSION.tgz
   tar -xzf Python-$PY_VERSION.tgz && rm -rf Python-$PY_VERSION.tgz
   cd Python-$PY_VERSION
   ./configure --enable-optimizations \
-		          --enable-unicode=ucs4
+		          --enable-unicode=ucs4 \
+              --enable-shared \
+              --prefix=$PY_DIR
 
   make && make install
   cd ../ && rm -rf Python-$PY_VERSION
+
+  # Install aliases for vagrant user
+  cat <<EOT >> /home/vagrant/.bashrc
+export LD_LIBRARY_PATH=$PY_DIR/lib
+export PATH=\$PATH:$PY_DIR/bin
+alias python=$PY_DIR/bin/python3
+alias pip=$PY_DIR/bin/pip3
+EOT
 }
 
 function install_python_devel() {

@@ -3,7 +3,7 @@
 
 Vagrant.configure("2") do |config|
   config.vm.box = "centos/7"
-  config.vm.provision "shell", inline: <<-SHELL
+  config.vm.provision "shell", run: "always", inline: <<-SHELL
     cp -pr /vagrant/provision.sh /usr/bin/provision
   SHELL
 
@@ -161,6 +161,20 @@ Vagrant.configure("2") do |config|
       # provision install_python
       provision install_python_devel
       provision install_pip
+      provision info "DONE!!!"
+    SHELL
+  end
+
+  config.vm.define "lempy3" do |box|
+    box.vm.hostname = 'lempy3'
+    box.vm.network :private_network, ip: "192.168.33.28"
+    box.vm.provision "shell", inline: <<-SHELL
+      provision setup
+      provision install_nfsd
+      provision install_nginx
+      provision install_mariadb
+      provision install_development_tools
+      provision install_python 3.6.5
       provision info "DONE!!!"
     SHELL
   end
