@@ -92,6 +92,17 @@ function install_mariadb() {
   mysql -e "FLUSH PRIVILEGES;"
 }
 
+function install_postgres() {
+  PG_VERSION=10.2
+  info "Installing PostgreSQL $PG_VERSION"
+  yum install -y https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm
+  yum install -y postgresql10 postgresql10-server
+
+  /usr/pgsql-10/bin/postgresql-10-setup initdb
+  systemctl enable postgresql-10
+  systemctl start postgresql-10
+}
+
 function install_php() {
   info "Installing PHP"
   rpm -Uvh /vagrant/ops/rpm/epel-release-latest-7.noarch.rpm

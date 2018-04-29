@@ -178,4 +178,18 @@ Vagrant.configure("2") do |config|
       provision info "DONE!!!"
     SHELL
   end
+
+  config.vm.define "lepgpy3" do |box|
+    box.vm.hostname = 'lepgpy3'
+    box.vm.network :private_network, ip: "192.168.33.29"
+    box.vm.provision "shell", inline: <<-SHELL
+      provision setup
+      provision install_nfsd
+      provision install_nginx
+      provision install_postgres
+      provision install_development_tools
+      provision install_python 3.6.5
+      provision info "DONE!!!"
+    SHELL
+  end
 end
