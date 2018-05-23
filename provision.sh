@@ -9,12 +9,12 @@ null() { echo >/dev/null; }
 
 function setup() {
   # Setup Google DNS
-  # echo "nameserver 8.8.8.8" > /etc/resolv.conf
-  # echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+  echo "nameserver 8.8.8.8" > /etc/resolv.conf
+  echo "nameserver 8.8.4.4" >> /etc/resolv.conf
 
   # Setup Cloudflare DNS
-  echo "nameserver 1.1.1.1" > /etc/resolv.conf
-  echo "nameserver 1.0.0.1" >> /etc/resolv.conf
+  # echo "nameserver 1.1.1.1" > /etc/resolv.conf
+  # echo "nameserver 1.0.0.1" >> /etc/resolv.conf
 
   # Install Public Key
   cat /vagrant/id_rsa.pub >> /home/vagrant/.ssh/authorized_keys
@@ -190,7 +190,7 @@ function install_docker_ce() {
 
 function install_docker_compose() {
   DC="docker-compose-`uname -s`-`uname -m`"
-  DC_VER="1.16.1"
+  DC_VER="1.21.2"
   info "Installing Docker Compose $DC_VER"
   curl -SLO https://github.com/docker/compose/releases/download/$DC_VER/$DC
 
